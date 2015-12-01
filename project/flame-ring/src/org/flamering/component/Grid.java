@@ -280,12 +280,12 @@ public class Grid {
 	public static void run(String beanName, String functionName, Object param, ClusterGroup group) {
 		if (_grid != null) {
 			String input = param == null ? "" : (param instanceof String ? param.toString() : Json.toJsonString(param));
-			if (group != null) {			
-				_grid.compute(group).run(() -> {
+			if (group != null) {
+				_grid.compute(group).withAsync().run(() -> {
 					ServiceManager.call(beanName, functionName, input);
 				});
 			} else {
-				_grid.compute().run(() -> {
+				_grid.compute().withAsync().run(() -> {
 					ServiceManager.call(beanName, functionName, input);
 				});
 			}
@@ -305,8 +305,8 @@ public class Grid {
 							param == null ? "" : (param instanceof String ? param.toString() : Json.toJsonString(param)));
 				});
 			}
-			if (group != null) _grid.compute(group).run(funcs);
-			else _grid.compute().run(funcs);
+			if (group != null) _grid.compute(group).withAsync().run(funcs);
+			else _grid.compute().withAsync().run(funcs);
 		}
 	}
 	
@@ -318,11 +318,11 @@ public class Grid {
 		if (_grid != null) {
 			String input = param == null ? "" : (param instanceof String ? param.toString() : Json.toJsonString(param));
 			if (group != null) {			
-				_grid.compute(group).broadcast(() -> {
+				_grid.compute(group).withAsync().broadcast(() -> {
 					ServiceManager.call(beanName, functionName, input);
 				});
 			} else {
-				_grid.compute().broadcast(() -> {
+				_grid.compute().withAsync().broadcast(() -> {
 					ServiceManager.call(beanName, functionName, input);
 				});
 			}
