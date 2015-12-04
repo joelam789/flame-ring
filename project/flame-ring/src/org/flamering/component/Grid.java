@@ -19,14 +19,30 @@ import org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi;
 import org.flamering.service.ServiceCaller;
 import org.flamering.service.ServiceManager;
 
+// TODO: Auto-generated Javadoc
+/**
+ * Wrapper class for Apache Ignite
+ */
 public class Grid {
 	
+	/** The Constant NODE_TYPE. */
 	public static final String NODE_TYPE = "ring-type";
+	
+	/** The Constant NODE_NAME. */
 	public static final String NODE_NAME = "ring-name";
+	
+	/** The Constant ENDPOINT_SEPARATOR. */
 	public static final String ENDPOINT_SEPARATOR = ",";
 	
+	/** The grid (the main object of Apache Ignite). */
 	private static Ignite _grid = null;
 	
+	/**
+	 * Start Apache Ignite with config file.
+	 *
+	 * @param configFile the config file
+	 * @return true, if successful
+	 */
 	public static boolean start(String configFile) {
 		
 		System.out.println("Starting Ignite (with config file " + configFile + ") ...");
@@ -87,6 +103,9 @@ public class Grid {
 		return _grid != null;
 	}
 	
+	/**
+	 * Stop Apache Ignite
+	 */
 	public static void stop() {
 		try {
 			if (_grid != null) {
@@ -101,10 +120,20 @@ public class Grid {
 		}
 	}
 	
+	/**
+	 * Gets the main Ignite object.
+	 *
+	 * @return the Ignite object
+	 */
 	public static Ignite getGrid() {
 		return _grid;
 	}
 	
+	/**
+	 * Gets the server type of local server.
+	 *
+	 * @return the local server type
+	 */
 	public static String getLocalType() {
 		if (_grid != null) {
 			Object value = _grid.cluster().localNode().attribute(NODE_TYPE);
@@ -113,6 +142,11 @@ public class Grid {
 		return "";
 	}
 	
+	/**
+	 * Gets the server name of local server.
+	 *
+	 * @return the local server name
+	 */
 	public static String getLocalName() {
 		if (_grid != null) {
 			Object value = _grid.cluster().localNode().attribute(NODE_NAME);
@@ -121,6 +155,11 @@ public class Grid {
 		return "";
 	}
 	
+	/**
+	 * Gets the address list of local server.
+	 *
+	 * @return the local server address list
+	 */
 	public static List<String> getLocalAddressList() {
 		List<String> result = new ArrayList<>();
 		if (_grid != null) {
@@ -129,6 +168,11 @@ public class Grid {
 		return result;
 	}
 	
+	/**
+	 * Gets local server's addresses as a string.
+	 *
+	 * @return the local server addresses
+	 */
 	public static String getLocalAddresses() {
 		if (_grid != null) {
 			String[] array = {};
@@ -138,6 +182,11 @@ public class Grid {
 		return "";
 	}
 	
+	/**
+	 * Gets the communication port info of local server.
+	 *
+	 * @return the local communication port info
+	 */
 	public static String getLocalCommunicationPortInfo() {
 		if (_grid != null) {
 			TcpCommunicationSpi spi = (TcpCommunicationSpi) _grid.configuration().getCommunicationSpi();
@@ -148,6 +197,11 @@ public class Grid {
 		return "";
 	}
 	
+	/**
+	 * Gets the discovery port info of local server.
+	 *
+	 * @return the local discovery port info
+	 */
 	public static String getLocalDiscoveryPortInfo() {
 		if (_grid != null) {
 			TcpDiscoverySpi spi = (TcpDiscoverySpi) _grid.configuration().getDiscoverySpi();
@@ -159,6 +213,11 @@ public class Grid {
 		return "";
 	}
 	
+	/**
+	 * Gets summary info of local server.
+	 *
+	 * @return the local server info
+	 */
 	public static String getLocalInfo() {
 		if (_grid != null) {
 			return _grid.cluster().localNode().metrics().toString();
@@ -166,6 +225,11 @@ public class Grid {
 		return "";
 	}
 	
+	/**
+	 * Gets the address list of all grids.
+	 *
+	 * @return the address list of all grids
+	 */
 	public static List<String> getGridAddressList() {
 		List<String> list = new ArrayList<String>();
 		if (_grid != null) {
@@ -187,11 +251,25 @@ public class Grid {
 		return list;
 	}
 	
+	/**
+	 * Gets the cache by name
+	 *
+	 * @param <K> the key type
+	 * @param <V> the value type
+	 * @param cacheName the cache name
+	 * @return the cache
+	 */
 	public static <K,V> IgniteCache<K,V> getCache(String cacheName) {
 		if(_grid != null) return _grid.<K, V>cache(cacheName);
 		else return null;
 	}
 	
+	/**
+	 * Gets the group with filters
+	 *
+	 * @param filters the filters
+	 * @return the group
+	 */
 	public static ClusterGroup getGroup(Map<String, String> filters) {
 		if (_grid != null) {
 			ClusterGroup group = null;
@@ -209,6 +287,12 @@ public class Grid {
 		return null;
 	}
 	
+	/**
+	 * Gets the group by server type (node type)
+	 *
+	 * @param nodeType the node type
+	 * @return the group
+	 */
 	public static ClusterGroup getGroup(String nodeType) {
 		if (_grid != null) {
 			return _grid.cluster().forAttribute(NODE_TYPE, nodeType);
@@ -216,6 +300,12 @@ public class Grid {
 		return null;
 	}
 	
+	/**
+	 * Gets the group by server name (node name)
+	 *
+	 * @param nodeName the node name
+	 * @return the group
+	 */
 	public static ClusterGroup getGroupByName(String nodeName) {
 		ClusterGroup group = null;
 		if (_grid != null) {
@@ -228,6 +318,16 @@ public class Grid {
 		return group;
 	}
 	
+	/**
+	 * remote procedure call among the grids in the group
+	 *
+	 * @param beanName the bean name
+	 * @param functionName the function name
+	 * @param param the param
+	 * @param requesterInfo the requester info
+	 * @param group the group
+	 * @return the result string
+	 */
 	public static String call(String beanName, String functionName, String param, String requesterInfo, ClusterGroup group) {
 		if (_grid != null) {
 			Collection<IgniteCallable<String>> calls = new ArrayList<>();
@@ -239,10 +339,28 @@ public class Grid {
 		return "";
 	}
 	
+	/**
+	 * remote procedure call among all grids
+	 *
+	 * @param beanName the bean name
+	 * @param functionName the function name
+	 * @param param the param
+	 * @param requesterInfo the requester info
+	 * @return the result string
+	 */
 	public static String call(String beanName, String functionName, String param, String requesterInfo) {
 		return call(beanName, functionName, param, requesterInfo, null);
 	}
 	
+	/**
+	 * remote procedure call among the grids in the group
+	 *
+	 * @param beanName the bean name
+	 * @param functionName the function name
+	 * @param param the param
+	 * @param group the group
+	 * @return the result string
+	 */
 	public static String call(String beanName, String functionName, Object param, ClusterGroup group) {
 		if (_grid != null) {
 			String input = param == null ? "" : (param instanceof String ? param.toString() : Json.toJsonString(param));
@@ -255,10 +373,27 @@ public class Grid {
 		return "";
 	}
 	
+	/**
+	 * remote procedure call among all grids
+	 *
+	 * @param beanName the bean name
+	 * @param functionName the function name
+	 * @param param the param
+	 * @return the result string
+	 */
 	public static String call(String beanName, String functionName, Object param) {
 		return call(beanName, functionName, param, null);
 	}
 	
+	/**
+	 * batch of remote procedure calls among the grids in the group
+	 *
+	 * @param beanName the bean name
+	 * @param functionName the function name
+	 * @param batch the batch
+	 * @param group the group
+	 * @return the result list
+	 */
 	public static List<String> callBatch(String beanName, String functionName, List<Object> batch, ClusterGroup group) {
 		List<String> result = new ArrayList<String>();
 		if (_grid != null) {
@@ -273,10 +408,26 @@ public class Grid {
 		return result;
 	}
 	
+	/**
+	 * batch of remote procedure calls among all grids
+	 *
+	 * @param beanName the bean name
+	 * @param functionName the function name
+	 * @param batch the batch
+	 * @return the result list
+	 */
 	public static List<String> callBatch(String beanName, String functionName, List<Object> batch) {
 		return callBatch(beanName, functionName, batch, null);
 	}
 	
+	/**
+	 * no-return-value remote procedure call among the grids in the group
+	 *
+	 * @param beanName the bean name
+	 * @param functionName the function name
+	 * @param param the param
+	 * @param group the group
+	 */
 	public static void run(String beanName, String functionName, Object param, ClusterGroup group) {
 		if (_grid != null) {
 			String input = param == null ? "" : (param instanceof String ? param.toString() : Json.toJsonString(param));
@@ -292,10 +443,25 @@ public class Grid {
 		}
 	}
 	
+	/**
+	 * no-return-value remote procedure call among all grids
+	 *
+	 * @param beanName the bean name
+	 * @param functionName the function name
+	 * @param param the param
+	 */
 	public static void run(String beanName, String functionName, Object param) {
 		run(beanName, functionName, param, null);
 	}
 	
+	/**
+	 * batch of no-return-value remote procedure calls among the grids in the group
+	 *
+	 * @param beanName the bean name
+	 * @param functionName the function name
+	 * @param batch the batch
+	 * @param group the group
+	 */
 	public static void runBatch(String beanName, String functionName, List<Object> batch, ClusterGroup group) {
 		if (_grid != null) {
 			Collection<IgniteRunnable> funcs = new ArrayList<>();
@@ -310,10 +476,25 @@ public class Grid {
 		}
 	}
 	
+	/**
+	 * batch of no-return-value remote procedure calls among all grids
+	 *
+	 * @param beanName the bean name
+	 * @param functionName the function name
+	 * @param batch the batch
+	 */
 	public static void runBatch(String beanName, String functionName, List<Object> batch) {
 		runBatch(beanName, functionName, batch, null);
 	}
 	
+	/**
+	 * broadcast remote procedure call among the grids in the group
+	 *
+	 * @param beanName the bean name
+	 * @param functionName the function name
+	 * @param param the param
+	 * @param group the group
+	 */
 	public static void broadcast(String beanName, String functionName, Object param, ClusterGroup group) {
 		if (_grid != null) {
 			String input = param == null ? "" : (param instanceof String ? param.toString() : Json.toJsonString(param));
@@ -329,10 +510,26 @@ public class Grid {
 		}
 	}
 	
+	/**
+	 * broadcast remote procedure call among all grids
+	 *
+	 * @param beanName the bean name
+	 * @param functionName the function name
+	 * @param param the param
+	 */
 	public static void broadcast(String beanName, String functionName, Object param) {
 		broadcast(beanName, functionName, param, null);
 	}
 	
+	/**
+	 * broadcast remote procedure call among the grids in the group, and get the list of results returned
+	 *
+	 * @param beanName the bean name
+	 * @param functionName the function name
+	 * @param param the param
+	 * @param group the group
+	 * @return the result list
+	 */
 	public static List<String> broadcastCall(String beanName, String functionName, Object param, ClusterGroup group) {
 		List<String> result = new ArrayList<String>();
 		if (_grid != null) {
@@ -343,6 +540,14 @@ public class Grid {
 		return result;
 	}
 	
+	/**
+	 * broadcast remote procedure call among all grids, and get the list of results returned
+	 *
+	 * @param beanName the bean name
+	 * @param functionName the function name
+	 * @param param the param
+	 * @return the result list
+	 */
 	public static List<String> broadcastCall(String beanName, String functionName, Object param) {
 		return broadcastCall(beanName, functionName, param, null);
 	}

@@ -20,79 +20,180 @@ import org.flamering.service.ServiceExecutor;
 import org.flamering.service.ServiceManager;
 import org.flamering.service.WebSocketServiceSession;
 
+// TODO: Auto-generated Javadoc
+/**
+ * Wrapper class for Vert.x
+ */
 public class Network extends AbstractVerticle {
 	
+	/** The Constant BEAN_NAME. */
 	public static final String BEAN_NAME = "network-manager";
 	
+	/** The Constant PATH_SEPARATOR. */
 	public static final String PATH_SEPARATOR = "/";
+	
+	/** The Constant PATH_WILDCARD. */
 	public static final String PATH_WILDCARD = "*";
+	
+	/** The Constant ENDPOINT_SEPARATOR. */
 	public static final String ENDPOINT_SEPARATOR = ",";
-	public static final String INVALID_SESSION_FLAG = "INVALID_SESSION_FLAG";
 	
 	// should create another class named NetworkSettings to hold the info
 	// but here i just mixed them up...
 	
+	/** The http root directory. */
 	private String _httpRoot = "";
+	
+	/** The http listening port. */
 	private int _httpPort = 0;
+	
+	/** The idle timeout of http connections (in seconds) */
 	private int _httpIdleTimeout = 0;
+	
+	/** The state of http server. */
 	private int _httpState = -1;
 	
+	/** The websocket root directory. */
 	private String _webSocketRoot = "";
+	
+	/** The websocket listening port. */
 	private int _webSocketPort = 0;
+	
+	/** The idle timeout of websocket connections (in seconds)*/
 	private int _webSocketIdleTimeout = 0;
+	
+	/** The state of websocket server. */
 	private int _webSocketState = -1;
 	
+	/** Whether web services are active */
 	private boolean _active = true;
 
+	/** The bus of all sessions. */
 	private EventBus _sessionBus = null;
+	
+	/** The http endpoints. */
 	private List<String> _endpoints = new ArrayList<String>();
+	
+	/** The websocket endpoints. */
 	private Map<String, ServerWebSocket> _wsendpoints = new HashMap<>();
 	
+	/** The singleton instance. */
 	private static Network _instance = null;
+	
+	/** The main object of vertx. */
 	private static Vertx _vertx = null;
 	
+	/**
+	 * Gets the http root directory.
+	 *
+	 * @return the http root directory
+	 */
 	public String getHttpRoot() {
 		return _httpRoot;
 	}
+	
+	/**
+	 * Sets the http root directory.
+	 *
+	 * @param httpRoot the new http root directory
+	 */
 	public void setHttpRoot(String httpRoot) {
 		_httpRoot = httpRoot;
 	}
 
+	/**
+	 * Gets the http listening port.
+	 *
+	 * @return the http listening port
+	 */
 	public int getHttpPort() {
 		return _httpPort;
 	}
+	
+	/**
+	 * Sets the http listening port.
+	 *
+	 * @param httpPort the new http listening port
+	 */
 	public void setHttpPort(int httpPort) {
 		_httpPort = httpPort;
 	}
 	
+	/**
+	 * Gets the idle timeout of http connections (in seconds).
+	 *
+	 * @return the idle timeout of http connections (in seconds)
+	 */
 	public int getHttpIdleTimeout() {
 		return _httpIdleTimeout;
 	}
+	
+	/**
+	 * Sets the idle timeout of http connections (in seconds).
+	 *
+	 * @param httpIdleTimeout the new idle timeout (in seconds)
+	 */
 	public void setHttpIdleTimeout(int httpIdleTimeout) {
 		_httpIdleTimeout = httpIdleTimeout;
 	}
 
+	/**
+	 * Gets the websocket root directory.
+	 *
+	 * @return the websocket root directory
+	 */
 	public String getWebSocketRoot() {
 		return _webSocketRoot;
 	}
+	
+	/**
+	 * Sets the websocket root directory.
+	 *
+	 * @param webSocketRoot the new websocket root directory
+	 */
 	public void setWebSocketRoot(String webSocketRoot) {
 		_webSocketRoot = webSocketRoot;
 	}
 
+	/**
+	 * Gets the websocket listening port.
+	 *
+	 * @return the websocket listening port
+	 */
 	public int getWebSocketPort() {
 		return _webSocketPort;
 	}
+	
+	/**
+	 * Sets the websocket listening port.
+	 *
+	 * @param webSocketPort the new websocket listening port
+	 */
 	public void setWebSocketPort(int webSocketPort) {
 		_webSocketPort = webSocketPort;
 	}
 
+	/**
+	 * Gets the idle timeout of websocket connections (in seconds).
+	 *
+	 * @return the idle timeout of websocket connections (in seconds)
+	 */
 	public int getWebSocketIdleTimeout() {
 		return _webSocketIdleTimeout;
 	}
+	
+	/**
+	 * Sets the idle timeout of websocket connections (in seconds).
+	 *
+	 * @param webSocketIdleTimeout the new idle timeout (in seconds)
+	 */
 	public void setWebSocketIdleTimeout(int webSocketIdleTimeout) {
 		_webSocketIdleTimeout = webSocketIdleTimeout;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.vertx.core.AbstractVerticle#start(io.vertx.core.Future)
+	 */
 	@Override
 	public void start(Future<Void> fut) {
 
@@ -207,8 +308,8 @@ public class Network extends AbstractVerticle {
 							_instance._wsendpoints.put(location, ws);
 					}
 					
-					ServiceExecutor.getInstance().registerSession(location, new WebSocketServiceSession(ws));
-		
+					// set events 
+					
 					ws.closeHandler(v -> {
 						synchronized(_instance._endpoints) {
 							_instance._endpoints.remove(location);
@@ -218,7 +319,11 @@ public class Network extends AbstractVerticle {
 					});
 		
 					ws.exceptionHandler(ex -> {
-						ws.close();
+						try {
+							ws.close();
+						} catch(Exception e) {
+							e.printStackTrace();
+						}
 						ServiceExecutor.getInstance().unregisterSession(location);
 					});
 		
@@ -227,7 +332,11 @@ public class Network extends AbstractVerticle {
 						if (_instance._webSocketState > 0 && _instance._active) {
 		
 							if (!frame.isText()) {
-								ws.close();
+								try {
+									ws.close();
+								} catch(Exception e) {
+									e.printStackTrace();
+								}
 								ServiceExecutor.getInstance().unregisterSession(location);
 							} else {
 								try {
@@ -239,8 +348,13 @@ public class Network extends AbstractVerticle {
 										}
 										ServiceExecutor.getInstance().processTask(location, content);
 									}
-								} catch (Exception e) {
-									ws.close();
+								} catch (Exception ex) {
+									ex.printStackTrace();
+									try {
+										ws.close();
+									} catch(Exception e) {
+										e.printStackTrace();
+									}
 									ServiceExecutor.getInstance().unregisterSession(location);
 								}
 							}
@@ -249,8 +363,15 @@ public class Network extends AbstractVerticle {
 		
 					});
 					
+					// register it after finish all processes about ws
+					ServiceExecutor.getInstance().registerSession(location, new WebSocketServiceSession(ws));
+					
 				} else {
-					ws.reject();
+					try {
+						ws.reject();
+					} catch(Exception e) {
+						e.printStackTrace();
+					}
 				}
 	
 			}).listen(_instance._webSocketPort, result -> {
@@ -269,10 +390,21 @@ public class Network extends AbstractVerticle {
 
 	}
 	
+	/**
+	 * Gets the single instance of Network.
+	 *
+	 * @return single instance of Network
+	 */
 	public static Network getInstance() {
 		return _instance;
 	}
 	
+	/**
+	 * Initialize network with bean name so that some properties could be set with Spring config file
+	 *
+	 * @param beanName the bean name
+	 * @return true, if successful
+	 */
 	public static boolean init(String beanName) {
 		// would use slf4j logger (see http://vertx.io/docs/apidocs/io/vertx/core/logging/Logger.html )
 		System.setProperty("vertx.logger-delegate-factory-class-name", "io.vertx.core.logging.SLF4JLogDelegateFactory");
@@ -281,20 +413,34 @@ public class Network extends AbstractVerticle {
 		return _instance != null;
 	}
 	
+	/**
+	 * Enable network functions
+	 */
 	public static void enable() {
 		if (_instance != null) _instance._active = true;
 	}
 	
+	/**
+	 * Disable network functions
+	 */
 	public static void disable() {
 		if (_instance != null) _instance._active = false;
 	}
 	
+	/**
+	 * Let network start to work
+	 *
+	 * @return true, if successful
+	 */
 	public static boolean work() {
 		if (_instance != null && _instance._httpState < 0 && _instance._webSocketState < 0)
 			return _instance.startNetwork();
 		return _instance != null;
 	}
 	
+	/**
+	 * Shutdown network
+	 */
 	public static void shutdown() {
 		if (_instance != null) {
 			try {
@@ -311,23 +457,43 @@ public class Network extends AbstractVerticle {
 		}
 	}
 	
+	/**
+	 * Gets the http listening port.
+	 *
+	 * @return the http listening port
+	 */
 	public static int getHttpListeningPort() {
 		return _instance != null && _instance._httpState > 0 ? _instance._httpPort : 0;
 	}
 	
+	/**
+	 * Gets the websocket listening port.
+	 *
+	 * @return the web socket listening port
+	 */
 	public static int getWebSocketListeningPort() {
 		return _instance != null && _instance._webSocketState > 0 ? _instance._webSocketPort : 0;
 	}
 	
+	/**
+	 * Gets the websocket client count.
+	 *
+	 * @return the web socket client count
+	 */
 	public static int getWebSocketClientCount() {
 		return _instance != null && _instance._webSocketState > 0 ? _instance._endpoints.size() : 0;
 	}
 	
+	/**
+	 * Gets the web server address (should be an external address).
+	 *
+	 * @return the web server address
+	 */
 	public static String getWebServerAddress() {
 		String addr = "";
 		try {
 			if (_instance != null && (_instance._httpState > 0 || _instance._webSocketState > 0))
-				addr = ServiceManager.call(NetworkService.SERVICE_NAME, 
+				addr = ServiceManager.call(NetworkService.BEAN_NAME, 
 						NetworkService.FUNC_ADDRESS, "");
 		} catch(Exception ex) {
 			System.err.println(ex.getMessage());
@@ -335,6 +501,11 @@ public class Network extends AbstractVerticle {
 		return (addr == null || addr.length() <= 0) ? "" : addr;
 	}
 	
+	/**
+	 * Start network.
+	 *
+	 * @return true, if successful
+	 */
 	protected boolean startNetwork() {
 		
 		boolean isOK = false;
@@ -390,6 +561,9 @@ public class Network extends AbstractVerticle {
 		return isOK;
 	}
 	
+	/**
+	 * Stop network.
+	 */
 	protected void stopNetwork() {
 		if (_vertx != null) _vertx.close();
 		if (_instance != null) {
@@ -404,6 +578,12 @@ public class Network extends AbstractVerticle {
 		System.out.println("Vert.x stopped!");
 	}
 
+	/**
+	 * Send data to clients
+	 *
+	 * @param data the data
+	 * @param endpoints the endpoints
+	 */
 	public void send(Object data, String... endpoints) {
 		if (_sessionBus != null) {
 			List<String> endpointList = new ArrayList<String>();
@@ -430,6 +610,11 @@ public class Network extends AbstractVerticle {
 		}
 	}
 	
+	/**
+	 * Broadcast data
+	 *
+	 * @param data the data
+	 */
 	public void broadcast(Object data) {
 		if (_sessionBus != null) {
 			List<String> endpointList = new ArrayList<String>();
@@ -449,6 +634,11 @@ public class Network extends AbstractVerticle {
 		}
 	}
 	
+	/**
+	 * Disconnect some clients
+	 *
+	 * @param endpoints the endpoints
+	 */
 	public void disconnect(String... endpoints) { // kick some websocket clients ...
 		if (_sessionBus != null && endpoints != null && endpoints.length > 0) {
 			List<ServerWebSocket> wsList = new ArrayList<>();
@@ -459,11 +649,18 @@ public class Network extends AbstractVerticle {
 				}
 			}
 			for (ServerWebSocket ws : wsList) {
-				ws.close();
+				try {
+					ws.close();
+				} catch(Exception ex) { // if one failed, keep processing others
+					ex.printStackTrace();
+				}
 			}
 		}
 	}
 	
+	/**
+	 * Disconnect all
+	 */
 	public void disconnect() { // kick all websocket clients ...
 		if (_sessionBus != null) {
 			List<ServerWebSocket> wsList = new ArrayList<>();
@@ -474,7 +671,11 @@ public class Network extends AbstractVerticle {
 				}
 			}
 			for (ServerWebSocket ws : wsList) {
-				ws.close();
+				try {
+					ws.close();
+				} catch(Exception ex) { // if one failed, keep processing others
+					ex.printStackTrace();
+				}
 			}
 		}
 	}

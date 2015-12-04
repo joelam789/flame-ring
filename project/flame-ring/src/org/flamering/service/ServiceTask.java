@@ -1,7 +1,6 @@
 package org.flamering.service;
 
 import org.flamering.component.Grid;
-import org.flamering.component.Network;
 
 // 1. this thread should work just for the client's direct requests (from Vert.x) only.
 // 2. because we use this thread just to make sure that the process of 
@@ -9,14 +8,29 @@ import org.flamering.component.Network;
 // 3. and please know that all computations in grids should be executed in some mode like multi-thread/multi-process already.
 //    (that's what Apache Ignite would do by default)
 
+/**
+ * The Class ServiceTask.
+ */
 public class ServiceTask implements Runnable {
 	
-	private ServiceSession _session = null;
-	private String _sessionName = "";
-	private boolean _isRegisteredSession = false;
+	/** The service session. */
+	protected ServiceSession _session = null;
 	
-	private String _taskContent = "";
+	/** The session name. */
+	protected String _sessionName = "";
 	
+	/** Whether the session is a registered session. */
+	protected boolean _isRegisteredSession = false;
+	
+	/** The task content. */
+	protected String _taskContent = "";
+	
+	/**
+	 * Instantiates a new service task.
+	 *
+	 * @param taskContent the task content
+	 * @param session the service session
+	 */
 	public ServiceTask(String taskContent, ServiceSession session) {
 		_session = session;
 		_sessionName = "";
@@ -25,6 +39,13 @@ public class ServiceTask implements Runnable {
 		_taskContent = taskContent;
 	}
 	
+	/**
+	 * Instantiates a new service task.
+	 *
+	 * @param taskContent the task content
+	 * @param session the service session
+	 * @param sessionName the session name
+	 */
 	public ServiceTask(String taskContent, ServiceSession session, String sessionName) {
 		_session = session;
 		_sessionName = sessionName;
@@ -34,6 +55,9 @@ public class ServiceTask implements Runnable {
 		_taskContent = taskContent;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Runnable#run()
+	 */
 	@Override
 	public void run() {
 		
@@ -71,10 +95,7 @@ public class ServiceTask implements Runnable {
 				}
 				
 				if (result != null && result.length() > 0) {
-					if (_isRegisteredSession && result.equals(Network.INVALID_SESSION_FLAG)) {
-						_session.close();
-						ServiceExecutor.getInstance().unregisterSession(_sessionName);
-					} else _session.send(result);
+					_session.send(result);
 				}
 				
 			}

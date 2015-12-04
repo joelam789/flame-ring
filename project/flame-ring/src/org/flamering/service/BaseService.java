@@ -4,11 +4,20 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The is the base service class, it should be extended by every custom service class
+ */
 public class BaseService implements Service {
 	
+	/** The function map. */
 	protected Map<String, String> _functionMap = new HashMap<String, String>();
+	
+	/** The original methods. */
 	protected Map<String, Method> _originalMethods = new HashMap<String, Method>();
 	
+	/**
+	 * Instantiates a new base service.
+	 */
 	public BaseService() {
 		if (_originalMethods != null) _originalMethods.clear();
 		else _originalMethods = new HashMap<String, Method>();
@@ -19,9 +28,20 @@ public class BaseService implements Service {
 		}
 	}
 	
+	/**
+	 * Gets the function map.
+	 *
+	 * @return the function map
+	 */
 	public Map<String, String> getFunctionMap() {
 		return _functionMap;
 	}
+	
+	/**
+	 * Sets the function map.
+	 *
+	 * @param functionMap the function map
+	 */
 	public void setFunctionMap(Map<String, String> functionMap) {
 		if (_functionMap != null) _functionMap.clear();
 		else _functionMap = new HashMap<String, String>();
@@ -32,6 +52,13 @@ public class BaseService implements Service {
 		}
 	}
 	
+	/**
+	 * Gets the function name.
+	 *
+	 * @param key the key
+	 * @param regOnly whether only get the registered function names
+	 * @return the function name
+	 */
 	public String getFunctionName(String key, boolean regOnly) {
 		if (_functionMap != null && key != null && key.length() > 0) {
 			String funcName = _functionMap.get(key.toLowerCase());
@@ -40,6 +67,9 @@ public class BaseService implements Service {
 		return regOnly ? "" : (key == null ? "" : key.toLowerCase());
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.flamering.service.Service#getFunction(java.lang.String, boolean)
+	 */
 	@Override
 	public Method getFunction(String key, boolean regOnly) {
 		String functionName = getFunctionName(key, regOnly);
