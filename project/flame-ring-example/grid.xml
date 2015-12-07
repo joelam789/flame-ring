@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util.xsd">
+        
+    <!-- Ignite settings -->
+    <bean id="ignite.cfg" class="org.apache.ignite.configuration.IgniteConfiguration">
+        
+        <!-- These are very important settings for flame-ring framework -->
+        <property name="userAttributes">
+			<map>
+				<!-- The TYPE of this node -->
+				<entry key="ring-type" value="hello-server"/>
+				<!-- The NAME of this node -->
+				<entry key="ring-name" value="hello-server#1"/>
+			</map>
+		</property>
+		
+		<!-- flame-ring framework would use slf4j as its logger interface -->
+		<property name="gridLogger">
+			<bean class="org.apache.ignite.logger.slf4j.Slf4jLogger"/>
+		</property>
+        
+    </bean> 
+    
+</beans>
