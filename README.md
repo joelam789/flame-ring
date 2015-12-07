@@ -2,6 +2,8 @@
 
 Flame Ring is a distributed RESTful API server framework based on Apache Ignite and Vert.x
 
-An usage example:
-https://github.com/joelam789/flame-ring-sample
+A minimal example:
+https://github.com/joelam789/flame-ring/tree/master/project/flame-ring-example
 
+A chatroom example:
+https://github.com/joelam789/flame-ring-sample
