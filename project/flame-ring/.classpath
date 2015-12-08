@@ -8,10 +8,6 @@
 	<classpathentry kind="lib" path="lib/commons-lang3-3.4.jar"/>
 	<classpathentry kind="lib" path="lib/h2-1.3.175.jar"/>
 	<classpathentry kind="lib" path="lib/hazelcast-3.5.2.jar"/>
-	<classpathentry kind="lib" path="lib/ignite-core-1.4.0.jar"/>
-	<classpathentry kind="lib" path="lib/ignite-indexing-1.4.0.jar"/>
-	<classpathentry kind="lib" path="lib/ignite-shmem-1.0.0.jar"/>
-	<classpathentry kind="lib" path="lib/ignite-spring-1.4.0.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-annotations-2.6.0.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-core-2.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-databind-2.6.1.jar"/>
@@ -34,9 +30,13 @@
 	<classpathentry kind="lib" path="lib/vertx-lang-js-3.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/vertx-service-proxy-3.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/vertx-web-3.1.0.jar"/>
-	<classpathentry kind="lib" path="lib/ignite-slf4j-1.4.0.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.6.4.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-jcl-1.6.4.jar"/>
+	<classpathentry kind="lib" path="lib/ignite-core-1.5.0-b1.jar"/>
+	<classpathentry kind="lib" path="lib/ignite-indexing-1.5.0-b1.jar"/>
+	<classpathentry kind="lib" path="lib/ignite-shmem-1.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/ignite-slf4j-1.5.0-b1.jar"/>
+	<classpathentry kind="lib" path="lib/ignite-spring-1.5.0-b1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
