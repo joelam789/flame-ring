@@ -6,12 +6,12 @@ Flame Ring is a distributed RESTful API server framework based on Apache Ignite 
 
 - Provide both HTTP and WebSocket bindings for all RESTful APIs.
 
-- No annotation supported in RESTful API development, all settings will be stored in Spring XML configuration files.
+- No annotations supported in RESTful API development, all settings will be stored in Spring XML configuration files.
 
 
 # A Minimal Example
 
-The class that contains the main method
+The class that contains the main() method
 
 ```javascript
 public class HelloWorldApp extends ConsoleApp {
@@ -54,7 +54,6 @@ The main configuration file which contains the settings of the RESTful APIs
 				<entry key="help" value="List all commands" />
 				<entry key="quit" value="Exit program" />
 				<entry key="state" value="Show server state" />
-				<entry key="version" value="Show server version" />
 			</map>
 		</property>
 		
@@ -68,7 +67,7 @@ The main configuration file which contains the settings of the RESTful APIs
 			</map>
 		</property>
 		
-		<!-- the file path of the Apache Ignite config file -->
+		<!-- the file path of the Apache Ignite configuration file -->
 		<property name="gridConfigFile" value="grid.xml" />
 	</bean>
 	
@@ -86,18 +85,18 @@ The main configuration file which contains the settings of the RESTful APIs
     
     <!-- http and websocket settings (for vert.x) -->
     <bean id="network-manager" class="org.flamering.component.Network">
-    	<!-- the root directory of our HTTP server -->
+    	<!-- the root directory of HTTP server -->
 		<property name="httpRoot" value="" />
-		<!-- the listening port of our HTTP server, might set it to "0" if we do not need HTTP -->
+		<!-- the listening port of HTTP server, might set it to "0" if do not need HTTP -->
 		<property name="httpPort" value="10080" />
-		<!-- the idle timeout of the connections on our HTTP server (in seconds) -->
+		<!-- the idle timeout of the connections on HTTP server (in seconds) -->
 		<property name="httpIdleTimeout" value="300" />
 		
-		<!-- the root directory of our WebSocket server -->
+		<!-- the root directory of WebSocket server -->
 		<property name="webSocketRoot" value="" />
-		<!-- the listening port of our WebSocket server, might set it to "0" if need no WebSocket -->
+		<!-- the listening port of WebSocket server, might set it to "0" if do not need WebSocket -->
 		<property name="webSocketPort" value="0" />
-		<!-- the idle timeout of the connections on our WebSocket server (in seconds) -->
+		<!-- the idle timeout of the connections on WebSocket server (in seconds) -->
 		<property name="webSocketIdleTimeout" value="300" />
     </bean>
     
@@ -115,7 +114,7 @@ The main configuration file which contains the settings of the RESTful APIs
     <bean id="service-settings" class="org.flamering.service.ServiceSettings">
 		<property name="serviceMap">
 			<map>
-				<!-- the "key" is the name of the service provided to clients to call -->
+				<!-- the "key" is the name of the service provided for clients to call -->
 				<!-- the "value" is the name of the service bean -->
 				<entry key="hello" value="hello-service" />
 			</map>
@@ -126,7 +125,7 @@ The main configuration file which contains the settings of the RESTful APIs
     <bean id="hello-service" class="org.flamering.example.HelloWorldService">
 		<property name="functionMap">
 			<map>
-				<!-- the "key" is the name of the function provided to clients to call -->
+				<!-- the "key" is the name of the function provided for clients to call -->
 				<!-- the "value" is the name of the real method of the service bean -->
 				<entry key="say-hello" value="hello" />
 			</map>
@@ -138,16 +137,14 @@ The main configuration file which contains the settings of the RESTful APIs
     <!-- http://127.0.0.1:10080/hello/say-hello/boy -->
     <!-- http://127.0.0.1:10080/hello/say-hello/girl -->
     
-    <!-- "hello" is the service name provided to clients to call -->
-    <!-- "say-hello" is the function name provided to clients to call -->
+    <!-- "hello" is the service name provided for clients to call -->
+    <!-- "say-hello" is the function name provided for clients to call -->
     <!-- "world/boy/girl" is the input content provided by the clients -->
     
     <!-- you may open the URL with your browser to see what will be returned -->
     <!-- you may modify   HelloWorldService.hello()  to change the output content -->
     
 </beans>
-
-
 ```
 
 The configuration file of Apache Ignite
