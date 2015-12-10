@@ -9,7 +9,7 @@ Flame Ring is a distributed RESTful API server framework based on Apache Ignite 
 - No annotations supported in RESTful API development, all settings will be stored in Spring XML configuration files.
 
 
-# A Minimal Example
+# Minimal Example
 
 The class that contains the main() method
 
@@ -183,7 +183,7 @@ You can find the source code of the minimal example here:
 https://github.com/joelam789/flame-ring/tree/master/project/flame-ring-example
 
 
-# A Chatroom Example
+# Chatroom Example
 
 You can find a more complicated chatroom example here:
 
