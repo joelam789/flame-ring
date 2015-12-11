@@ -4,7 +4,7 @@ Flame Ring is a distributed RESTful API server framework based on Apache Ignite 
 
 - It is a very lightweight framework and developers can access Apache Ignite directly.
 
-- Provide both HTTP and WebSocket bindings for all RESTful APIs.
+- Provide both HTTP and WebSocket bindings (with SSL support) for all RESTful APIs.
 
 - No annotations supported in RESTful API development, all settings will be stored in Spring XML configuration files.
 
@@ -92,12 +92,20 @@ The main configuration file which contains the settings of the RESTful APIs
 		<!-- the idle timeout of the connections on HTTP server (in seconds) -->
 		<property name="httpIdleTimeout" value="300" />
 		
+		<!-- set key store file if need SSL -->
+		<!-- <property name="httpKeyStorePath" value="server-keystore.jks" /> -->
+		<!-- <property name="httpKeyStorePassword" value="password" /> -->
+		
 		<!-- the root directory of WebSocket server -->
 		<property name="webSocketRoot" value="" />
 		<!-- the listening port of WebSocket server, might set it to "0" if do not need WebSocket -->
 		<property name="webSocketPort" value="0" />
 		<!-- the idle timeout of the connections on WebSocket server (in seconds) -->
 		<property name="webSocketIdleTimeout" value="300" />
+		
+		<!-- set key store file if need SSL -->
+		<!-- <property name="webSocketKeyStorePath" value="server-keystore.jks" /> -->
+		<!-- <property name="webSocketKeyStorePassword" value="password" /> -->
     </bean>
     
     <!-- basic networking service -->

@@ -11,6 +11,7 @@ import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.http.ServerWebSocket;
+import io.vertx.core.net.JksOptions;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 
@@ -50,6 +51,12 @@ public class Network extends AbstractVerticle {
 	/** The idle timeout of http connections (in seconds) */
 	private int _httpIdleTimeout = 0;
 	
+	/** The http key store path. */
+	private String _httpKeyStorePath = "";
+	
+	/** The http key store password. */
+	private String _httpKeyStorePassword = "";
+	
 	/** The state of http server. */
 	private int _httpState = -1;
 	
@@ -61,6 +68,12 @@ public class Network extends AbstractVerticle {
 	
 	/** The idle timeout of websocket connections (in seconds)*/
 	private int _webSocketIdleTimeout = 0;
+	
+	/** The websocket key store path. */
+	private String _webSocketKeyStorePath = "";
+	
+	/** The websocket key store password. */
+	private String _webSocketKeyStorePassword = "";
 	
 	/** The state of websocket server. */
 	private int _webSocketState = -1;
@@ -82,6 +95,7 @@ public class Network extends AbstractVerticle {
 	
 	/** The main object of vertx. */
 	private static Vertx _vertx = null;
+	
 	
 	/**
 	 * Gets the http root directory.
@@ -135,6 +149,42 @@ public class Network extends AbstractVerticle {
 	 */
 	public void setHttpIdleTimeout(int httpIdleTimeout) {
 		_httpIdleTimeout = httpIdleTimeout;
+	}
+	
+	/**
+	 * Gets the http key store path.
+	 *
+	 * @return the http key store path
+	 */
+	public String getHttpKeyStorePath() {
+		return _httpKeyStorePath;
+	}
+	
+	/**
+	 * Sets the http key store path.
+	 *
+	 * @param httpKeyStorePath the http key store path
+	 */
+	public void setHttpKeyStorePath(String httpKeyStorePath) {
+		_httpKeyStorePath = httpKeyStorePath;
+	}
+
+	/**
+	 * Gets the http key store password.
+	 *
+	 * @return the http key store password
+	 */
+	public String getHttpKeyStorePassword() {
+		return _httpKeyStorePassword;
+	}
+	
+	/**
+	 * Sets the http key store password.
+	 *
+	 * @param httpKeyStorePassword the http key store password
+	 */
+	public void setHttpKeyStorePassword(String httpKeyStorePassword) {
+		_httpKeyStorePassword = httpKeyStorePassword;
 	}
 
 	/**
@@ -190,6 +240,43 @@ public class Network extends AbstractVerticle {
 	public void setWebSocketIdleTimeout(int webSocketIdleTimeout) {
 		_webSocketIdleTimeout = webSocketIdleTimeout;
 	}
+	
+	/**
+	 * Gets the websocket key store path.
+	 *
+	 * @return the websocket key store path
+	 */
+	public String getWebSocketKeyStorePath() {
+		return _webSocketKeyStorePath;
+	}
+	
+	/**
+	 * Sets the websocket key store path.
+	 *
+	 * @param webSocketKeyStorePath the websocket key store path
+	 */
+	public void setWebSocketKeyStorePath(String webSocketKeyStorePath) {
+		_webSocketKeyStorePath = webSocketKeyStorePath;
+	}
+
+	/**
+	 * Gets the websocket key store password.
+	 *
+	 * @return the websocket key store password
+	 */
+	public String getWebSocketKeyStorePassword() {
+		return _webSocketKeyStorePassword;
+	}
+	
+	/**
+	 * Sets the websocket key store password.
+	 *
+	 * @param webSocketKeyStorePassword the websocket key store password
+	 */
+	public void setWebSocketKeyStorePassword(String webSocketKeyStorePassword) {
+		_webSocketKeyStorePassword = webSocketKeyStorePassword;
+	}
+	
 
 	/* (non-Javadoc)
 	 * @see io.vertx.core.AbstractVerticle#start(io.vertx.core.Future)
@@ -242,6 +329,10 @@ public class Network extends AbstractVerticle {
 						else content = cmd + PATH_SEPARATOR + content;
 					}
 					
+					if (_instance._httpKeyStorePath.length() > 0) {
+						routingContext.response().setChunked(true); // encrypted data would be sent as binary?
+					}
+					
 					ServiceExecutor.getInstance().runTask(content, 
 							new HttpServiceSession(routingContext.request(), routingContext.response()));
 					
@@ -255,10 +346,18 @@ public class Network extends AbstractVerticle {
 			if (httpIdleTimeout < 0) httpIdleTimeout = 0;
 			HttpServerOptions httpOptions = new HttpServerOptions();
 			httpOptions.setIdleTimeout(httpIdleTimeout);
+			
+			if (_instance._httpKeyStorePath.length() > 0) {
+				httpOptions.setSsl(true);
+				httpOptions.setKeyStoreOptions(new JksOptions()
+						.setValue(vertx.fileSystem().readFileBlocking(_instance._httpKeyStorePath))
+						.setPassword(_instance._httpKeyStorePassword));
+			}
 	
 			vertx.createHttpServer(httpOptions).requestHandler(router::accept).listen(_instance._httpPort, result -> {
 				if (result.succeeded()) {
-					System.out.println("HTTP service started on " + _instance._httpPort);
+					System.out.println("HTTP service started on " + _instance._httpPort
+							+ (_instance._httpKeyStorePath.length() > 0 ? " (with SSL) " : ""));
 					_instance._httpState = 1;
 					if (_instance._httpState > 0 && _instance._webSocketState > 0) fut.complete();
 				} else {
@@ -279,6 +378,13 @@ public class Network extends AbstractVerticle {
 			if (wsIdleTimeout < 0) wsIdleTimeout = 0;
 			HttpServerOptions wsOptions = new HttpServerOptions();
 			wsOptions.setIdleTimeout(wsIdleTimeout);
+			
+			if (_instance._webSocketKeyStorePath.length() > 0) {
+				wsOptions.setSsl(true);
+				wsOptions.setKeyStoreOptions(new JksOptions()
+						.setValue(vertx.fileSystem().readFileBlocking(_instance._webSocketKeyStorePath))
+						.setPassword(_instance._webSocketKeyStorePassword));
+			}
 			
 			String websocketRootPath = _instance._webSocketRoot == null 
 					? PATH_SEPARATOR : (_instance._webSocketRoot.startsWith(PATH_SEPARATOR) 
@@ -376,7 +482,8 @@ public class Network extends AbstractVerticle {
 	
 			}).listen(_instance._webSocketPort, result -> {
 				if (result.succeeded()) {
-					System.out.println("WebSocket service started on " + _instance._webSocketPort);
+					System.out.println("WebSocket service started on " + _instance._webSocketPort
+							+ (_instance._webSocketKeyStorePath.length() > 0 ? " (with SSL) " : ""));
 					_instance._webSocketState = 1;
 					if (_instance._httpState > 0 && _instance._webSocketState > 0) fut.complete();
 				} else {
