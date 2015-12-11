@@ -92,7 +92,7 @@ The main configuration file which contains the settings of the RESTful APIs
 		<!-- the idle timeout of the connections on HTTP server (in seconds) -->
 		<property name="httpIdleTimeout" value="300" />
 		
-		<!-- set key store file if need SSL -->
+		<!-- set keystore file if need SSL -->
 		<!-- <property name="httpKeyStorePath" value="server-keystore.jks" /> -->
 		<!-- <property name="httpKeyStorePassword" value="password" /> -->
 		
@@ -103,7 +103,7 @@ The main configuration file which contains the settings of the RESTful APIs
 		<!-- the idle timeout of the connections on WebSocket server (in seconds) -->
 		<property name="webSocketIdleTimeout" value="300" />
 		
-		<!-- set key store file if need SSL -->
+		<!-- set keystore file if need SSL -->
 		<!-- <property name="webSocketKeyStorePath" value="server-keystore.jks" /> -->
 		<!-- <property name="webSocketKeyStorePassword" value="password" /> -->
     </bean>
