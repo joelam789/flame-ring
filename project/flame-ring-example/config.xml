@@ -41,9 +41,9 @@
 	<bean id="service-executor" class="org.flamering.service.ServiceExecutor">
 		<property name="minThreadPoolSize" value="128" />
 		<property name="maxThreadPoolSize" value="2048" />
-		<property name="threadQueueSize" value="8192" />
+		<property name="maxThreadQueueSize" value="8192" />
 		<!-- the idle timeout for every thread in the pool (in seconds) -->
-		<property name="threadMaxIdleTime" value="180" />
+		<property name="maxThreadIdleTime" value="180" />
     </bean>
     
     <!-- http and websocket settings (for vert.x) -->

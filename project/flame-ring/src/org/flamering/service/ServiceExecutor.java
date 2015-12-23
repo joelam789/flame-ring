@@ -30,10 +30,10 @@ public class ServiceExecutor {
 	protected int _maxThreadPoolSize = 2048;
 	
 	/** The thread queue size. */
-	protected int _threadQueueSize = 8192;
+	protected int _maxThreadQueueSize = 8192;
 	
 	/** The maximum idle time for every thread (in seconds) */
-	protected int _threadMaxIdleTime = 180;
+	protected int _maxThreadIdleTime = 180;
 	
 	/** The queue map. */
 	protected Map<String, Queue<String>> _queueMap = new ConcurrentHashMap<String, Queue<String>>();
@@ -55,8 +55,8 @@ public class ServiceExecutor {
 		_threadPool = new ThreadPoolExecutor(
 							_minThreadPoolSize,    // core pool size
 							_maxThreadPoolSize,   // max pool size
-							_threadMaxIdleTime, TimeUnit.SECONDS, // max idle time
-							new ArrayBlockingQueue<Runnable>(_threadQueueSize),
+							_maxThreadIdleTime, TimeUnit.SECONDS, // max idle time
+							new ArrayBlockingQueue<Runnable>(_maxThreadQueueSize),
 							new ThreadPoolExecutor.AbortPolicy()
 							);
 	}
@@ -73,16 +73,16 @@ public class ServiceExecutor {
 		
 		_minThreadPoolSize = minPoolSize;
 		_maxThreadPoolSize = maxPoolSize;
-		_threadQueueSize = queueSize;
-		_threadMaxIdleTime = maxIdleTime;
+		_maxThreadQueueSize = queueSize;
+		_maxThreadIdleTime = maxIdleTime;
 		
 		_state = 1;
 		
 		_threadPool = new ThreadPoolExecutor(
 						_minThreadPoolSize,    // core pool size
 						_maxThreadPoolSize,   // max pool size
-						_threadMaxIdleTime, TimeUnit.SECONDS, // max idle time
-						new ArrayBlockingQueue<Runnable>(_threadQueueSize),
+						_maxThreadIdleTime, TimeUnit.SECONDS, // max idle time
+						new ArrayBlockingQueue<Runnable>(_maxThreadQueueSize),
 						new ThreadPoolExecutor.AbortPolicy()
 						);
 	}
@@ -306,8 +306,8 @@ public class ServiceExecutor {
 	 *
 	 * @return the thread queue size
 	 */
-	public int getThreadQueueSize() {
-		return _threadQueueSize;
+	public int getMaxThreadQueueSize() {
+		return _maxThreadQueueSize;
 	}
 
 	/**
@@ -315,8 +315,8 @@ public class ServiceExecutor {
 	 *
 	 * @param threadQueueSize the new thread queue size
 	 */
-	public void setThreadQueueSize(int threadQueueSize) {
-		_threadQueueSize = threadQueueSize;
+	public void setMaxThreadQueueSize(int threadQueueSize) {
+		_maxThreadQueueSize = threadQueueSize;
 	}
 
 	/**
@@ -324,17 +324,17 @@ public class ServiceExecutor {
 	 *
 	 * @return the thread's maximum idle time (in seconds)
 	 */
-	public int getThreadMaxIdleTime() {
-		return _threadMaxIdleTime;
+	public int getMaxThreadIdleTime() {
+		return _maxThreadIdleTime;
 	}
 
 	/**
-	 * Sets the thread's maximum idle time (in seconds)
+	 * Sets every thread's maximum idle time (in seconds)
 	 *
-	 * @param threadMaxIdleTime the new maximum idle time (in seconds)
+	 * @param maxIdleTime the new maximum idle time (in seconds)
 	 */
-	public void setThreadMaxIdleTime(int threadMaxIdleTime) {
-		_threadMaxIdleTime = threadMaxIdleTime;
+	public void setMaxThreadIdleTime(int maxIdleTime) {
+		_maxThreadIdleTime = maxIdleTime;
 	}
 
 	
