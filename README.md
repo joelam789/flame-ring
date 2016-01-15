@@ -6,7 +6,7 @@ Flame Ring is a distributed RESTful API server framework based on Apache Ignite 
 
 - Provide both HTTP and WebSocket bindings (with SSL support) for all RESTful APIs.
 
-- No annotations supported in RESTful API development, all settings will be stored in Spring XML configuration files.
+- No annotations supported in RESTful API development, all settings are stored in Spring XML configuration files.
 
 
 # Minimal Example
