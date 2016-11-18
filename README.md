@@ -92,6 +92,9 @@ The main configuration file which contains the settings of the RESTful APIs
 		<!-- the idle timeout of the connections on HTTP server (in seconds) -->
 		<property name="httpIdleTimeout" value="300" />
 		
+		<!-- set "Access-Control-Allow-Origin" if need CORS -->
+		<!-- <property name="httpAllowOrigin" value="*" /> -->
+		
 		<!-- set keystore file if need SSL -->
 		<!-- <property name="httpKeyStorePath" value="server-keystore.jks" /> -->
 		<!-- <property name="httpKeyStorePassword" value="password" /> -->
