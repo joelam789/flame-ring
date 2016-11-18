@@ -57,6 +57,9 @@ public class Network extends AbstractVerticle {
 	/** The http key store password. */
 	private String _httpKeyStorePassword = "";
 	
+	/** The http header "Access-Control-Allow-Origin". */
+	private String _httpAllowOrigin = "";
+	
 	/** The state of http server. */
 	private int _httpState = -1;
 	
@@ -185,6 +188,24 @@ public class Network extends AbstractVerticle {
 	 */
 	public void setHttpKeyStorePassword(String httpKeyStorePassword) {
 		_httpKeyStorePassword = httpKeyStorePassword;
+	}
+	
+	/**
+	 * Gets the content of http header "Access-Control-Allow-Origin".
+	 *
+	 * @return the content of http header "Access-Control-Allow-Origin"
+	 */
+	public String getHttpAllowOrigin() {
+		return _httpAllowOrigin;
+	}
+	
+	/**
+	 * Sets the content of http header "Access-Control-Allow-Origin".
+	 *
+	 * @param httpAllowOrigin the value of "Access-Control-Allow-Origin"
+	 */
+	public void setHttpAllowOrigin(String httpAllowOrigin) {
+		_httpAllowOrigin = httpAllowOrigin;
 	}
 
 	/**
@@ -329,6 +350,15 @@ public class Network extends AbstractVerticle {
 						else content = cmd + PATH_SEPARATOR + content;
 					}
 					
+					// make reply friendly to browsers... so if need to return binary data, please use base64
+					routingContext.response().putHeader("Content-Type", "text/plain");
+					
+					if (_instance._httpAllowOrigin != null && _instance._httpAllowOrigin.length() > 0) { // simple support for CORS
+						routingContext.response().putHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept"); 
+						routingContext.response().putHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, HEAD, DELETE, CONNECT"); 
+						routingContext.response().putHeader("Access-Control-Allow-Origin", _instance._httpAllowOrigin);
+					}
+					
 					if (_instance._httpKeyStorePath.length() > 0) {
 						routingContext.response().setChunked(true); // encrypted data would be sent as binary?
 					}
@@ -356,9 +386,9 @@ public class Network extends AbstractVerticle {
 	
 			vertx.createHttpServer(httpOptions).requestHandler(router::accept).listen(_instance._httpPort, result -> {
 				if (result.succeeded()) {
-					System.out.println("HTTP service started on " + _instance._httpPort
-							+ (_instance._httpKeyStorePath.length() > 0 ? " (with SSL) " : ""));
+					System.out.println("HTTP service started on " + _instance._httpPort + (_instance._httpKeyStorePath.length() > 0 ? " (with SSL) " : ""));
 					_instance._httpState = 1;
+					if (_instance._httpAllowOrigin.length() > 0) System.out.println("Access-Control-Allow-Origin: " + _instance._httpAllowOrigin);
 					if (_instance._httpState > 0 && _instance._webSocketState > 0) fut.complete();
 				} else {
 					System.out.println("Failed to start HTTP service on " + _instance._httpPort);
@@ -482,8 +512,7 @@ public class Network extends AbstractVerticle {
 	
 			}).listen(_instance._webSocketPort, result -> {
 				if (result.succeeded()) {
-					System.out.println("WebSocket service started on " + _instance._webSocketPort
-							+ (_instance._webSocketKeyStorePath.length() > 0 ? " (with SSL) " : ""));
+					System.out.println("WebSocket service started on " + _instance._webSocketPort + (_instance._webSocketKeyStorePath.length() > 0 ? " (with SSL) " : ""));
 					_instance._webSocketState = 1;
 					if (_instance._httpState > 0 && _instance._webSocketState > 0) fut.complete();
 				} else {
@@ -574,12 +603,39 @@ public class Network extends AbstractVerticle {
 	}
 	
 	/**
+	 * Gets the cors setting of http service.
+	 *
+	 * @return the value of "Access-Control-Allow-Origin"
+	 */
+	public static String getHttpAccessControlAllowOrigin() {
+		return _instance != null && _instance._httpState > 0 ? _instance._httpAllowOrigin : "";
+	}
+	
+	/**
+	 * Checks whether the HTTP service is working with SSL
+	 *
+	 * @return Returns true if the HTTP service is working with SSL
+	 */
+	public static boolean isHttpWorkingWithSsl() {
+		return _instance != null && _instance._httpState > 0 && _instance._httpKeyStorePath.length() > 0;
+	}
+	
+	/**
 	 * Gets the websocket listening port.
 	 *
 	 * @return the web socket listening port
 	 */
 	public static int getWebSocketListeningPort() {
 		return _instance != null && _instance._webSocketState > 0 ? _instance._webSocketPort : 0;
+	}
+	
+	/**
+	 * Checks whether the WebSocket service is working with SSL
+	 *
+	 * @return Returns true if the WebSocket service is working with SSL
+	 */
+	public static boolean isWebSocketWorkingWithSsl() {
+		return _instance != null && _instance._webSocketState > 0 && _instance._webSocketKeyStorePath.length() > 0;
 	}
 	
 	/**

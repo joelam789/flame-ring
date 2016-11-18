@@ -59,6 +59,9 @@
 		<!-- <property name="httpKeyStorePath" value="server-keystore.jks" /> -->
 		<!-- <property name="httpKeyStorePassword" value="password" /> -->
 		
+		<!-- set "Access-Control-Allow-Origin" if need CORS -->
+		<!-- <property name="httpAllowOrigin" value="*" /> -->
+		
 		<!-- the root directory of WebSocket server -->
 		<property name="webSocketRoot" value="" />
 		<!-- the listening port of WebSocket server, might set it to "0" if do not need WebSocket -->

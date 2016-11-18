@@ -31,6 +31,7 @@ import org.flamering.service.ServiceExecutor;
 import org.flamering.service.ServiceManager;
 import org.flamering.service.ServiceSettings;
 
+// TODO: Auto-generated Javadoc
 /**
  * The default console application class.
  */
@@ -158,7 +159,7 @@ public class ConsoleApp implements AppMessageHandler {
 	}
 	
 	/**
-	 * Write message to log
+	 * Write message to log.
 	 *
 	 * @param msg the message
 	 */
@@ -177,7 +178,7 @@ public class ConsoleApp implements AppMessageHandler {
 	}
 	
 	/**
-	 * Initialize the application with the config file
+	 * Initialize the application with the config file.
 	 *
 	 * @param configFile the config file
 	 * @return the application state
@@ -277,7 +278,7 @@ public class ConsoleApp implements AppMessageHandler {
 	}
 	
 	/**
-	 * Initialize the application with the default config file
+	 * Initialize the application with the default config file.
 	 *
 	 * @return the application state
 	 */
@@ -286,7 +287,7 @@ public class ConsoleApp implements AppMessageHandler {
 	}
 	
 	/**
-	 * Initialize the application with the arguments passed by function main()
+	 * Initialize the application with the arguments passed by function main().
 	 *
 	 * @param args the args
 	 * @return the application state
@@ -342,7 +343,7 @@ public class ConsoleApp implements AppMessageHandler {
 	}
 	
 	/**
-	 * Quit application
+	 * Quit application.
 	 *
 	 * @return the action message
 	 */
@@ -352,7 +353,7 @@ public class ConsoleApp implements AppMessageHandler {
 	}
 	
 	/**
-	 * Run application
+	 * Run application.
 	 *
 	 * @return the application state
 	 */
@@ -509,7 +510,7 @@ public class ConsoleApp implements AppMessageHandler {
 	}
 	
 	/**
-	 * Register commands
+	 * Register commands.
 	 */
 	protected void regCmds() {
 		
@@ -634,7 +635,7 @@ public class ConsoleApp implements AppMessageHandler {
 	}
 	
 	/**
-	 * Gets alert message for the wrong cmd input
+	 * Gets alert message for the wrong cmd input.
 	 *
 	 * @return the alert message
 	 */
@@ -654,18 +655,20 @@ public class ConsoleApp implements AppMessageHandler {
 		int httpPort = Network.getHttpListeningPort();
 		int wsPort = Network.getWebSocketListeningPort();
 		
-		if (httpPort > 0) rsl += "HTTP service is working on port " + httpPort + "\n";
-		else rsl += "No HTTP service available" + "\n";
-		
-		if (wsPort > 0) rsl += "WebSocket service is working on port " + wsPort + "\n";
-		else rsl += "No WebSocket service available" + "\n";
-		
 		if (httpPort > 0 || wsPort > 0) {
 			rsl += "Web server address is " + Network.getWebServerAddress() + "\n";
 		}
 		
-		if (wsPort > 0)
+		if (httpPort > 0) {
+			rsl += "HTTP service is working on port " + httpPort + (Network.isHttpWorkingWithSsl() ? " (with SSL)\n" : "\n");
+			String crossDomains = Network.getHttpAccessControlAllowOrigin();
+			if (crossDomains.length() > 0) rsl += "Access-Control-Allow-Origin: " + crossDomains + "\n";
+		} else rsl += "No HTTP service available" + "\n";
+		
+		if (wsPort > 0) {
+			rsl += "WebSocket service is working on port " + wsPort + (Network.isWebSocketWorkingWithSsl() ? " (with SSL)\n" : "\n");
 			rsl += "Number of the clients on WebSocket: " + Network.getWebSocketClientCount() + "\n";
+		} else rsl += "No WebSocket service available" + "\n";
 		
 		rsl += "----------------------------------------------------------------------------\n";
 		
