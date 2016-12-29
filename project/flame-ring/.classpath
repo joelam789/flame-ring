@@ -9,11 +9,7 @@
 	<classpathentry kind="lib" path="lib/commons-lang3-3.4.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/h2-1.4.191.jar"/>
-	<classpathentry kind="lib" path="lib/ignite-core-1.7.0.jar"/>
-	<classpathentry kind="lib" path="lib/ignite-indexing-1.7.0.jar"/>
 	<classpathentry kind="lib" path="lib/ignite-shmem-1.0.0.jar"/>
-	<classpathentry kind="lib" path="lib/ignite-slf4j-1.7.0.jar"/>
-	<classpathentry kind="lib" path="lib/ignite-spring-1.7.0.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-annotations-2.7.0.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-core-2.7.4.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-databind-2.7.4.jar"/>
@@ -32,7 +28,6 @@
 	<classpathentry kind="lib" path="lib/netty-tcnative-boringssl-static-1.1.33.Fork21.jar"/>
 	<classpathentry kind="lib" path="lib/netty-transport-4.1.5.Final.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.7.7.jar"/>
-	<classpathentry kind="lib" path="lib/slf4j-jcl-1.7.7.jar"/>
 	<classpathentry kind="lib" path="lib/spring-aop-4.1.0.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-beans-4.1.0.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/spring-context-4.1.0.RELEASE.jar"/>
@@ -47,5 +42,9 @@
 	<classpathentry kind="lib" path="lib/vertx-service-proxy-3.3.3.jar"/>
 	<classpathentry kind="lib" path="lib/vertx-stack-manager-3.3.3.jar"/>
 	<classpathentry kind="lib" path="lib/vertx-web-3.3.3.jar"/>
+	<classpathentry kind="lib" path="lib/ignite-core-1.8.0.jar"/>
+	<classpathentry kind="lib" path="lib/ignite-indexing-1.8.0.jar"/>
+	<classpathentry kind="lib" path="lib/ignite-slf4j-1.8.0.jar"/>
+	<classpathentry kind="lib" path="lib/ignite-spring-1.8.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

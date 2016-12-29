@@ -3,5 +3,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/flame-ring"/>
+	<classpathentry kind="lib" path="lib/slf4j-jcl-1.7.7.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -313,6 +313,9 @@ public class Network extends AbstractVerticle {
 			}
 		}
 		
+		if (_instance._httpPort > 0) _instance._httpState = 0;
+		if (_instance._webSocketPort > 0) _instance._webSocketState = 0;
+		
 		// http
 		
 		if (_instance._httpPort > 0) {
@@ -369,8 +372,6 @@ public class Network extends AbstractVerticle {
 				}
 
 			});
-		
-			_instance._httpState = 0;
 			
 			int httpIdleTimeout = _instance._httpIdleTimeout;
 			if (httpIdleTimeout < 0) httpIdleTimeout = 0;
@@ -401,8 +402,6 @@ public class Network extends AbstractVerticle {
 		
 		
 		if (_instance._webSocketPort > 0) {
-		
-			_instance._webSocketState = 0;
 			
 			int wsIdleTimeout = _instance._webSocketIdleTimeout;
 			if (wsIdleTimeout < 0) wsIdleTimeout = 0;
@@ -690,12 +689,13 @@ public class Network extends AbstractVerticle {
 					
 					_vertx.deployVerticle(_instance.getClass().getName());
 					
-					Thread.sleep(500);
-					for (int i=1; i<=50; i++) {
+					Thread.sleep(1000);
+					for (int i=1; i<=100; i++) { // if over 10s than timeout
 						if (_instance._httpPort > 0 && _instance._httpState != 0) break;
 						if (_instance._webSocketPort > 0 && _instance._webSocketState != 0) break;
 						Thread.sleep(100);
 					}
+					Thread.sleep(1000);
 					
 					isOK = (_instance._httpPort <= 0 || _instance._httpState > 0)
 								&& (_instance._webSocketPort <= 0 || _instance._webSocketState > 0);
